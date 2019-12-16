@@ -20,21 +20,26 @@ fun main() {
 //
 //    val student = Student("John", "Frost", 22)
 //    WriteObjectToFile(student)
-
-
     var log: MutableList<Training> = ArrayList()
+    if (File("./ser.txt").exists()){
+    log= ReadObjectFromFile("./ser.txt") as MutableList<Training>
+}
+
     var cat: MutableSet<KnownExercise> = LinkedHashSet()
     // es existiert ein Katalog an uebungen unabhängig von var training
 
     readCatalog(cat, "./catalog.txt")
     println("Starte Eingabe: t->k-->n end to stop")
-    newTraining(log)
-    readLogFile(cat, log[0], "./log.txt")
+
 //  TODO: liest nur alte Logs. checke IO und readLogFile Fkt.
     var sw: String = ""
     var stop = false
     while (!stop) {
         when (readLine().toString()) {
+            "r" -> {
+                newTraining(log)
+                readLogFile(cat, log.last(), "./log.txt")
+            }
             "t" -> {
                 newTraining(log);println("t ended")
             }
@@ -49,10 +54,10 @@ fun main() {
     }
 
 
-    WriteObjectToFile(log[0])
+    WriteObjectToFile(log)
     println("warte")
-    var t = ReadObjectFromFile("./ser.txt") as Training
-    println(t)
+    var t_list= ReadObjectFromFile("./ser.txt") as MutableList<Training>
+    println(t_list)
 }
 
 fun newExercise(training: Training, cat: MutableSet<KnownExercise>) {
@@ -160,7 +165,7 @@ fun readCatalog(cat: MutableSet<KnownExercise>, filepath: String) {
     }
     println("added: \n $cat")
 }
-
+// TODO: hier 100/3/3/4 ermöglichen
 fun readLogFile(cat: MutableSet<KnownExercise>, training: Training, filepath: String) {
     val f: File = File(filepath)
     var inputLines = f.readLines()
@@ -168,6 +173,7 @@ fun readLogFile(cat: MutableSet<KnownExercise>, training: Training, filepath: St
     // first line: 20.01.1995
     var date = format.parse(inputLines.first())
     println("test " + date)
+    training.date=date
     for (str in inputLines.drop(1)) {
         var id = str.split(":").first().trim()
         val sets = str.split(":").last().trim()
@@ -180,13 +186,24 @@ fun readLogFile(cat: MutableSet<KnownExercise>, training: Training, filepath: St
 
         }
         val setsCollection = sets.split(" ")
+
         for (setsWithConstW in setsCollection) {
-            val first = setsWithConstW.split("/").first()
-            val rest = setsWithConstW.split("/").last()
-            val sets = rest.split(",")
-            for (s in sets) {
-                val exerciseSet = ExerciseSet(weight = first.toInt(), reps = s.toInt())
-                exercises.last().sets.add(exerciseSet)
+            var setvals = setsWithConstW.split("/")
+            var nn=setvals.size
+            var ii=1
+            var weight= setvals.first().toInt()
+            var reps=0
+
+            while(ii < nn){
+                reps=setvals[ii].toInt()
+                training.exercises.last().sets.add(
+                    ExerciseSet(
+                        weight = weight,
+                        reps = reps
+                    )
+                )
+                ii++
+
             }
 
 
