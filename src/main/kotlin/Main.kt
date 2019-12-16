@@ -27,10 +27,10 @@ fun main() {
     // es existiert ein Katalog an uebungen unabhängig von var training
 
     readCatalog(cat, "./catalog.txt")
-    println("Starte Eingabe: t->k-->n")
+    println("Starte Eingabe: t->k-->n end to stop")
     newTraining(log)
     readLogFile(cat, log[0], "./log.txt")
-
+//  TODO: liest nur alte Logs. checke IO und readLogFile Fkt.
     var sw: String = ""
     var stop = false
     while (!stop) {
@@ -66,12 +66,23 @@ fun newExercise(training: Training, cat: MutableSet<KnownExercise>) {
         var inputlist = setInput.split(" ")
         for (input in inputlist) {
             var setvals = input.split("/")
-            training.exercises.last().sets.add(
-                ExerciseSet(
-                    weight = setvals.first().toInt(),
-                    reps = setvals.last().toInt()
+            var nn=setvals.size
+            var ii=1
+            var weight= setvals.first().toInt()
+            var reps=0
+            while(ii < nn){
+                reps=setvals[ii].toInt()
+                training.exercises.last().sets.add(
+                    ExerciseSet(
+                        weight = weight,
+                        reps = reps
+                    )
                 )
-            )
+                ii++
+
+            }
+
+
         }
         println("added: ${training.exercises.last().sets} ")
     } else
