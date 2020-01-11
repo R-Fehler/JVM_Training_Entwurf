@@ -2,8 +2,6 @@ import model.Exercise
 import model.ExerciseSet
 import model.KnownExercise
 import model.Training
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashSet
 import java.io.*
 import java.text.SimpleDateFormat
 
